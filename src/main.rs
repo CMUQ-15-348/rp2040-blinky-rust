@@ -82,7 +82,7 @@ fn main() -> ! {
 
     let mut delay = Delay::new(core.SYST, clocks.system_clock.freq().to_Hz());
 
-    // Configure the pads.  Writing 0 disables input and enables output.
+    // Configure the pads.  Writing 0 disables input and enables output for that pad.
     write_reg(PADS_BANK0_BASE + (PIN + 1) * 4, 0);
 
     // Configure IO_BANK0: Set GPIO??_CTRL.funcsel = 5, which selects SIO control.
@@ -95,7 +95,7 @@ fn main() -> ! {
     // The SIO peripheral base address is 0xD000_0000.
     // The GPIO_OE_SET register is at offset 0x024.
     // We first need to enable the output driver for GPIO??.
-    write_reg(SIO_BASE + 0x024, 1 << PIN);
+    write_reg(SIO_BASE + 0x024, read_reg(SIO_BASE + 0x024) | 1 << PIN);
 
     loop {
         // Turn LED "on": Set GPIO15 high.  The GPIO_OUT_SET register is at offset 0x014.
