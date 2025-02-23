@@ -11,9 +11,8 @@
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
-            //"toolchainPrefix": "arm-none-eabi",
+            "toolchainPrefix": "arm-none-eabi",
             //"gdbPath": "gdb-multiarch",
-            //"objdumpPath": "arm-none-eabi-objdump",
             //"gdbPath": "arm-none-eabi-gdb",
             "device": "RP2040",
             "configFiles": [
@@ -52,13 +51,13 @@
                 "clearSearch": false,
                 "polling_interval": 20,
                 "rtt_start_retry": 2000,
-                // To properly decode defmt, you need to do `defmt-print -e target/thumbv6m-none-eabi/debug/rp2040_blink tcp --host=localhost --port=60000` in a console
                 "decoders": [
                     {
                         "label": "RTT channel 0",
                         "port": 0,
                         //"timestamp": true,
                         //"type": "console",
+                        "type": "defmt", // This only works with the modified cortex-debug extension
                     }
                 ]
             },
