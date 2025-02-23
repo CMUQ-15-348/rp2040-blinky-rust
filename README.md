@@ -26,7 +26,7 @@ While running, you should see the `INFO` messages displayed on the console.  You
 
 This repo includes the configuration to do single-step debugging.  In order for it to work, however, you need to do the following:
 
-- Install the cortex-debug VSCode extension.
+- Install the cortex-debug VSCode extension.  (The defmt output won't work properly without a modified version of the extension from me.  I'll get this setup better later.)
 - Install openocd 0.12 or later:  
   `sudo apt install openocd` on Ubuntu 24.04 or newer.  Older versions of Ubuntu ship an out of date version that won't work.
 - Install gdb-multiarch and symlink it to `arm-none-eabi-gdb` which is what the debugging extension expects:  
