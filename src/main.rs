@@ -26,7 +26,7 @@ use bsp::hal::{
 use rp_pico as bsp;
 
 // The Pin to deal with in this file
-const PIN: u32 = 15;
+const PIN: u32 = 25;
 
 // Some base addresses for pointers...
 const PADS_BANK0_BASE: u32 = 0x4001_C000_u32;
