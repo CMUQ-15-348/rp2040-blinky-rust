@@ -98,12 +98,12 @@ fn main() -> ! {
     write_reg(SIO_BASE + 0x024, read_reg(SIO_BASE + 0x024) | 1 << PIN);
 
     loop {
-        // Turn LED "on": Set GPIO15 high.  The GPIO_OUT_SET register is at offset 0x014.
+        // Turn LED "on": Set GPIO?? high.  The GPIO_OUT_SET register is at offset 0x014.
         info!("LED on");
         write_reg(SIO_BASE + 0x014, 1 << PIN);
         delay.delay_ms(500);
 
-        // Turn LED "off": Clear GPIO15 high. The GPIO_OUT_CLR register is at offset 0x018.
+        // Turn LED "off": Clear GPIO?? high. The GPIO_OUT_CLR register is at offset 0x018.
         info!("LED off");
         write_reg(SIO_BASE + 0x018, 1 << PIN);
         delay.delay_ms(500);
