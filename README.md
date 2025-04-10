@@ -11,7 +11,6 @@ This repo contains a simple example to blink a PIN on the RP2040 board.  This is
   `rustup target add thumbv6m-none-eabi`
 - Install probe-rs:  
   `cargo install --locked probe-rs-tools`
-- (Fix up for later) Install the modified cortex-debug extension for VSCode.
 
 ## Running Normally
 
