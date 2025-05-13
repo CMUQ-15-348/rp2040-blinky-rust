@@ -69,7 +69,8 @@ pub fn clear_bits(addr: u32, mask: u32) {
     }
 }
 
-/* Some control register addresses that we need.  These come from the datasheet. */
+/* Some control register addresses that we need.  These come from the
+ * datasheet. */
 pub const RESETS_BASE: u32 = 0x4000_c000_u32;
 pub const PADS_BANK0_BASE: u32 = 0x4001_c000_u32;
 pub const IO_BANK0_BASE: u32 = 0x4001_4000_u32;
@@ -85,10 +86,12 @@ pub const WATCHDOG_BASE: u32 = 0x4005_8000_u32;
  * There is a nice reference in the SDK:
  * https://github.com/raspberrypi/pico-sdk/blob/ee68c78d0afae2b69c03ae1a72bf5cc267a2d94c/src/rp2_common/pico_runtime_init/runtime_init_clocks.c#L40
  *
- * In the early weeks of the class, you are not required to understand what this code does.
- * Once we cover the clocks, you should be able to follow along here while using the datasheet as a reference.
+ * In the early weeks of the class, you are not required to understand what
+ * this code does. Once we cover the clocks, you should be able to follow
+ * along here while using the datasheet as a reference.
  *
- * This use of this code is optional.  If you don't do it, then the default system clock comes from the ring oscillator, which is about 6 Mhz.
+ * This use of this code is optional.  If you don't do it, then the default
+ * system clock comes from the ring oscillator, which is about 6 Mhz.
  */
 pub fn init_clocks() {
     // Enable the XOSC (2.16.7)
@@ -103,7 +106,8 @@ pub fn init_clocks() {
         // Wait for the glitchless mux to be set to 2
     }
 
-    // Set the CLK_SYS glitchless mux to 0 (CLK_REF) so that we can mess with the CLK_SYS sources without causing issues.
+    // Set the CLK_SYS glitchless mux to 0 (CLK_REF) so that we can mess with the
+    // CLK_SYS sources without causing issues.
     clear_bits(CLOCKS_BASE + 0x3c, 0x0000_0001);
     while read_reg(CLOCKS_BASE + 0x3c) & 0x0000_0001 != 0 {
         // Wait for the glitchless mux to be set to 0
@@ -138,22 +142,29 @@ pub fn init_clocks() {
         // Wait for the PLL to be ready
     }
 
-    // Configure the CLK_SYS_CTRL register to configure the muxes and ultimately set CLK_SYS to the PLL.  (2.15.3.2)
-    // Set the aux mux to PLL_SYS (0 written to bits 5-7).  This is only safe to do right now because we set the glitchless mux to 0 above.
+    // Configure the CLK_SYS_CTRL register to configure the muxes and ultimately set
+    // CLK_SYS to the PLL.  (2.15.3.2) Set the aux mux to PLL_SYS (0 written to
+    // bits 5-7).  This is only safe to do right now because we set the glitchless
+    // mux to 0 above.
     write_reg(
         CLOCKS_BASE + 0x3c,
         read_reg(CLOCKS_BASE + 0x3c) & !(0b111 << 5),
     );
-    set_bits(CLOCKS_BASE + 0x3c, 0x0000_0001); // Set the glitchless mux to 1 (CLKSRC_CLK_SYS_AUX) so that we now use the PLL coming in on AUX.
+    set_bits(CLOCKS_BASE + 0x3c, 0x0000_0001); // Set the glitchless mux to 1 (CLKSRC_CLK_SYS_AUX) so that we now use the PLL
+                                               // coming in on AUX.
 
     // Set the peripheral clock to be the same as clk_sys
-    write_reg(CLOCKS_BASE + 0x48, 0); // Disable the clock by clearing bit 11.  This also sets AUXSRC to 0, which is CLK_SYS
-    let _ = read_reg(CLOCKS_BASE); // Read the register just to stall for some cycles (we're waiting to make sure the clock peripheral clock is actually stopped)
+    write_reg(CLOCKS_BASE + 0x48, 0); // Disable the clock by clearing bit 11.  This also sets AUXSRC to 0, which is
+                                      // CLK_SYS
+    let _ = read_reg(CLOCKS_BASE); // Read the register just to stall for some cycles (we're waiting to make sure
+                                   // the clock peripheral clock is actually stopped)
     write_reg(CLOCKS_BASE + 0x48, 1 << 11); // Enable it
 
-    // Configure the watchdog tick counter so that it divides by 12, leading to one tick every us.  (Because the XOSC is 12MHz.)
-    // Without this being set properly, the TIMER doesn't count at the correct interval.
-    write_reg(WATCHDOG_BASE + 0x2c, 12 | 1 << 9); // Set the divider to 12 and enable the watchdog
+    // Configure the watchdog tick counter so that it divides by 12, leading to one
+    // tick every us.  (Because the XOSC is 12MHz.) Without this being set
+    // properly, the TIMER doesn't count at the correct interval.
+    write_reg(WATCHDOG_BASE + 0x2c, 12 | 1 << 9); // Set the divider to 12 and
+                                                  // enable the watchdog
 }
 
 /*
@@ -170,14 +181,14 @@ fn init_io(pin: u32) {
     set_bits(RESETS_BASE, 1 << 8); // Write 1 to reset
     clear_bits(RESETS_BASE, 1 << 8); // Write 0 to deassert reset
 
-    // Configure the pads.  Writing 0 disables input and enables output for that pad.
-    // See Table 339 and Table 341 in the datasheet for details
+    // Configure the pads.  Writing 0 disables input and enables output for that
+    // pad. See Table 339 and Table 341 in the datasheet for details
     write_reg(PADS_BANK0_BASE + (pin + 1) * 4, 0);
 
     // Configure IO_BANK0: Set GPIO??_CTRL.funcsel = 5, which selects SIO control.
-    // The IO_BANK0 peripheral base address is 0x4001_4000. According to the datasheet,
-    // each GPIO has 8 bytes of registers. For example, the GPIO15 CTRL register is located at:
-    //   offset = (15 * 8) + 4 = 124 (0x7C)
+    // The IO_BANK0 peripheral base address is 0x4001_4000. According to the
+    // datasheet, each GPIO has 8 bytes of registers. For example, the GPIO15
+    // CTRL register is located at:   offset = (15 * 8) + 4 = 124 (0x7C)
     // See Table 283, Table 285, and Table 279 in the datasheet for details
     write_reg(IO_BANK0_BASE + (pin * 8 + 4), 5);
 
@@ -200,16 +211,16 @@ fn main() -> ! {
 
     let mut x = 0;
     loop {
-        // Turn LED "on": Set GPIO?? high.  The GPIO_OUT_SET register is at offset 0x014.
-        // See Table 16 and Table 21 in the datasheet for details
+        // Turn LED "on": Set GPIO?? high.  The GPIO_OUT_SET register is at offset
+        // 0x014. See Table 16 and Table 21 in the datasheet for details
         info!("LED on {}", x);
         write_reg(SIO_BASE + 0x014, 1 << PIN);
         for _ in 0..800000 {
             cortex_m::asm::nop();
         }
 
-        // Turn LED "off": Clear GPIO?? high. The GPIO_OUT_CLR register is at offset 0x018.
-        // See Table 16 and Table 21 in the datasheet for details
+        // Turn LED "off": Clear GPIO?? high. The GPIO_OUT_CLR register is at offset
+        // 0x018. See Table 16 and Table 21 in the datasheet for details
         info!("LED off");
         write_reg(SIO_BASE + 0x018, 1 << PIN);
         for _ in 0..800000 {
