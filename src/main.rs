@@ -197,7 +197,7 @@ fn init_io(pin: u32) {
     // The GPIO_OE_SET register is at offset 0x024.
     // We first need to enable the output driver for GPIO??.
     // See Table 16 and Table 25 in the datasheet for details
-    write_reg(SIO_BASE + 0x024, read_reg(SIO_BASE + 0x024) | 1 << pin);
+    write_reg(SIO_BASE + 0x024, 1 << pin);
 }
 
 /*
