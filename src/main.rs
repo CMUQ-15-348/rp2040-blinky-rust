@@ -80,6 +80,7 @@ pub const CLOCKS_BASE: u32 = 0x4000_8000_u32;
 pub const PLL_SYS_BASE: u32 = 0x4002_8000_u32;
 pub const PLL_USB_BASE: u32 = 0x4002_c000_u32;
 pub const WATCHDOG_BASE: u32 = 0x4005_8000_u32;
+pub const TIMER_BASE: u32 = 0x4005_4000_u32;
 
 /*
  * Configure the system clock to 125 MHz.
@@ -163,8 +164,13 @@ pub fn init_clocks() {
     // Configure the watchdog tick counter so that it divides by 12, leading to one
     // tick every us.  (Because the XOSC is 12MHz.) Without this being set
     // properly, the TIMER doesn't count at the correct interval.
-    write_reg(WATCHDOG_BASE + 0x2c, 12 | 1 << 9); // Set the divider to 12 and
-                                                  // enable the watchdog
+    write_reg(WATCHDOG_BASE + 0x2c, 12 | 1 << 9); // Set the divider to 12 and enable the watchdog
+
+    // Configure the timer not to pause during debugging. Otherwise, the watchdog timer always returns 0
+    // See...
+    // https://github.com/raspberrypi/debugprobe/issues/45
+    // https://github.com/raspberrypi/pico-sdk/issues/1586
+    write_reg(TIMER_BASE + 0x2c, 0);
 }
 
 /*
