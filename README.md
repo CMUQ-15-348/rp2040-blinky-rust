@@ -21,7 +21,7 @@ This repo contains a simple example to blink a PIN on the RP2040 board.  This is
 ### Mac (I think)
 
 - Install the compiler and support tools for the Arm Cortex Processors:  
-  `brew install binutils-arm-none-eabi gcc-arm-none-eabi`
+  `brew install gcc-arm-none-eabi`
 - Install rust: [https://rustup.rs/](https://rustup.rs/)
 - Add the ARM target for the Cortex-M0 for Rust:  
   `rustup target add thumbv6m-none-eabi`
