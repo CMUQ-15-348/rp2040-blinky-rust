@@ -2,7 +2,13 @@
 
 This repo contains a simple example to blink a PIN on the RP2040 board.  This is different from most other examples, though, because it does it by manually configuring the control registers.
 
-## Pre-Requisite Installation Instructions (Ubuntu)
+## Pre-Requisite Installation Instructions
+
+### Lab Machines
+
+- Everything is already installed.
+
+### Ubuntu
 
 - Install the compiler and support tools for the Arm Cortex Processors:  
   `sudo apt install binutils-arm-none-eabi gcc-arm-none-eabi`
@@ -11,6 +17,23 @@ This repo contains a simple example to blink a PIN on the RP2040 board.  This is
   `rustup target add thumbv6m-none-eabi`
 - Install probe-rs:  
   `cargo install --locked probe-rs-tools`
+
+### Mac (I think)
+
+- Install the compiler and support tools for the Arm Cortex Processors:  
+  `brew install binutils-arm-none-eabi gcc-arm-none-eabi`
+- Install rust: [https://rustup.rs/](https://rustup.rs/)
+- Add the ARM target for the Cortex-M0 for Rust:  
+  `rustup target add thumbv6m-none-eabi`
+- Install probe-rs:  
+  `cargo install --locked probe-rs-tools`
+
+### Windows (Maybe)
+
+- Install Windows Subsystem for Linux (WSL2) and install Ubuntu
+- Open a Linux shell and follow the Ubuntu instructions above
+
+This gets you all the software, but you can't talk to the debug probe because the USB device isn't being passed to the Linux virtual machine.  You can fix this using [WSL USB Manager](https://github.com/nickbeth/wsl-usb-manager).  You'll need to bind and attach the CMSIS-DAP USB device.
 
 ## Running Normally
 
@@ -32,4 +55,4 @@ This repo includes the configuration to do single-step debugging.  In order for 
   `sudo apt install gdb-multiarch`  
   `cd /usr/local/bin; ln -s /usr/bin/gdb-multiarch arm-none-eabi-gdb`
 
-If all of that is installed, you should be able to hit 'F5' and cause a build/upload/run cycle that automatically stops at the entry.  You can also set breakpoints, single-step, etc.*
+If all of that is installed, you should be able to hit 'F5' and cause a build/upload/run cycle that automatically stops at the entry.  You can also set breakpoints, single-step, etc.
